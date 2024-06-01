@@ -5,6 +5,7 @@
 #include "./dynamic-array.h"
 
 static inline bool isDynamicArrayFull(DynamicArray *);
+static inline bool isDynamicArrayEmpty(DynamicArray *);
 static void freeDynamicArrayList(DynamicArrayElement **, unsigned int, bool);
 static void freeDynamicArrayListElement(DynamicArrayElement *element);
 static void dynamicArrayResize(DynamicArray *);
@@ -73,6 +74,11 @@ static void dynamicArrayResize(DynamicArray *dynamicArray)
 static inline bool isDynamicArrayFull(DynamicArray *dynamicArray)
 {
     return dynamicArray->capacity == dynamicArray->size;
+}
+
+static inline bool isDynamicArrayEmpty(DynamicArray *dynamicArray)
+{
+    return dynamicArray->size == 0;
 }
 
 static void freeDynamicArrayListElement(DynamicArrayElement *element)
@@ -160,4 +166,51 @@ void PrintDynamicArray(DynamicArray *dynamicArray)
         }
     }
     printf("]\n");
+}
+
+void DynamicArrayRemove(DynamicArray *dynamicArray, unsigned int index)
+{
+    if (dynamicArray == NULL || index >= dynamicArray->size || isDynamicArrayEmpty(dynamicArray))
+    {
+        return;
+    }
+    freeDynamicArrayListElement(dynamicArray->list[index]);
+
+    for (unsigned int i = index + 1; i < dynamicArray->size; i++)
+    {
+        dynamicArray->list[i - 1] = dynamicArray->list[i];
+    }
+
+    dynamicArray->size--;
+}
+
+void DynamicArrayRemoveFirstElement(DynamicArray *dynamicArray)
+{
+    if (dynamicArray == NULL)
+    {
+        return;
+    }
+    DynamicArrayRemove(dynamicArray, 0);
+}
+
+void DynamicArrayRemoveLastElement(DynamicArray *dynamicArray)
+{
+    if (dynamicArray == NULL)
+    {
+        return;
+    }
+    DynamicArrayRemove(dynamicArray, dynamicArray->size - 1);
+}
+
+DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType type, void *value, unsigned int len)
+{
+    DynamicArrayElement *dynamicArrayElement = malloc(sizeof(DynamicArrayElement));
+    if (dynamicArrayElement == NULL)
+    {
+        return NULL;
+    }
+    dynamicArrayElement->type = type;
+    dynamicArrayElement->value = value;
+    dynamicArrayElement->len = len;
+    return dynamicArrayElement;
 }

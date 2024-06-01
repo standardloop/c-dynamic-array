@@ -25,10 +25,14 @@ typedef struct
 DynamicArray *DynamicArrayInit(unsigned int);
 DynamicArray *DefaultDynamicArrayInit(void);
 
+DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType, void *, unsigned int);
+
 void DynamicArrayAdd(DynamicArray *, DynamicArrayElement *);
+void DynamicArrayRemove(DynamicArray *, unsigned int);
+void DynamicArrayRemoveFirstElement(DynamicArray *);
+void DynamicArrayRemoveLastElement(DynamicArray *);
 
 void PrintDynamicArray(DynamicArray *);
-
 void FreeDynamicArray(DynamicArray *);
 
 #endif

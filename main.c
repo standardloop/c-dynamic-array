@@ -12,36 +12,31 @@ int main(void)
     {
         return EXIT_FAILURE;
     }
+
     // add a string to the array
-    DynamicArrayElement *string_ele = malloc(sizeof(DynamicArrayElement));
-    char *string_ele_value = malloc(sizeof(char) * 6);
+    size_t string_ele_length = 6;
+    char *string_ele_value = malloc(sizeof(char) * string_ele_length);
     strcpy(string_ele_value, "hello");
-    string_ele->len = 6;
-    string_ele->type = CHAR_ARR_t;
-    string_ele->value = string_ele_value;
+    DynamicArrayElement *string_ele = DynamicArrayElementInit(CHAR_ARR_t, string_ele_value, string_ele_length);
     DynamicArrayAdd(dynamicArray, string_ele);
 
     // add an int array to the array
-    DynamicArrayElement *int_arr_ele = malloc(sizeof(DynamicArrayElement));
-    int *int_arr_ele_value = malloc(sizeof(int) * 6);
-    for (int i = 0; i < 6; i++)
+    size_t int_arr_ele_length = 6;
+    int *int_arr_ele_value = malloc(sizeof(int) * int_arr_ele_length);
+    for (int i = 0; i < (int)int_arr_ele_length; i++)
     {
         int_arr_ele_value[i] = i;
     }
-    int_arr_ele->len = 6;
-    int_arr_ele->type = INT_ARR_t;
-    int_arr_ele->value = int_arr_ele_value;
+    DynamicArrayElement *int_arr_ele = DynamicArrayElementInit(INT_ARR_t, int_arr_ele_value, int_arr_ele_length);
     DynamicArrayAdd(dynamicArray, int_arr_ele);
 
     // add an int to the array
-    DynamicArrayElement *single_int_ele = malloc(sizeof(DynamicArrayElement));
     int *single_int_ele_value = malloc(sizeof(int) * 1);
     *single_int_ele_value = 1000;
-    single_int_ele->len = 1;
-    single_int_ele->type = INT_t;
-    single_int_ele->value = single_int_ele_value;
+    DynamicArrayElement *single_int_ele = DynamicArrayElementInit(INT_t, single_int_ele_value, 1);
     DynamicArrayAdd(dynamicArray, single_int_ele);
 
+    DynamicArrayRemoveFirstElement(dynamicArray);
     PrintDynamicArray(dynamicArray);
 
     FreeDynamicArray(dynamicArray);
