@@ -1,30 +1,31 @@
 #ifndef DYNAMIC_ARRAY_H
 #define DYNAMIC_ARRAY_H
 
-// enum DynamicArrayElementType
-// {
-//     BOOL_t,
-//     NUMBER_t,
-//     STRING_t,
-// };
+enum DynamicArrayElementType
+{
+    INT_ARR_t,
+    INT_t,
+    CHAR_ARR_t,
+};
 
-// typedef struct
-// {
-//     enum DynamicArrayElementType type;
-//     void *value;
-// } DynamicArrayElement;
+typedef struct
+{
+    enum DynamicArrayElementType type;
+    void *value;
+    unsigned int len;
+} DynamicArrayElement;
 
 typedef struct
 {
     unsigned int size;
     unsigned int capacity;
-    void **list;
+    DynamicArrayElement **list;
 } DynamicArray;
 
 DynamicArray *DynamicArrayInit(unsigned int);
 DynamicArray *DefaultDynamicArrayInit(void);
 
-void DynamicArrayAdd(DynamicArray *, void *);
+void DynamicArrayAdd(DynamicArray *, DynamicArrayElement *);
 
 void PrintDynamicArray(DynamicArray *);
 

@@ -5,13 +5,15 @@
 #include "./dynamic-array.h"
 
 static inline bool isDynamicArrayFull(DynamicArray *);
-static void freeDynamicArrayList(void **, unsigned int);
-static void freeDynamicArrayListElement(void *element);
+static void freeDynamicArrayList(DynamicArrayElement **, unsigned int, bool);
+static void freeDynamicArrayListElement(DynamicArrayElement *element);
 static void dynamicArrayResize(DynamicArray *);
+
+static void printIntArr(int *, unsigned int);
 
 DynamicArray *DefaultDynamicArrayInit(void)
 {
-    return DynamicArrayInit(4);
+    return DynamicArrayInit(1);
 }
 
 DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
@@ -24,11 +26,11 @@ DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
     }
     dynamicArray->size = 0;
     dynamicArray->capacity = initial_capacity;
-    dynamicArray->list = malloc(sizeof(void *) * dynamicArray->capacity);
+    dynamicArray->list = malloc(sizeof(DynamicArrayElement *) * dynamicArray->capacity);
     return dynamicArray;
 }
 
-void DynamicArrayAdd(DynamicArray *dynamicArray, void *element)
+void DynamicArrayAdd(DynamicArray *dynamicArray, DynamicArrayElement *element)
 {
     if (dynamicArray == NULL || element == NULL)
     {
@@ -49,9 +51,10 @@ static void dynamicArrayResize(DynamicArray *dynamicArray)
     {
         return;
     }
+    printf("[INFO]: resizing array\n");
     const unsigned int size_multiple = 2;
     // double the capacity
-    void **newList = malloc(sizeof(void *) * dynamicArray->capacity * size_multiple);
+    DynamicArrayElement **newList = malloc(sizeof(DynamicArrayElement *) * dynamicArray->capacity * size_multiple);
     if (newList == NULL)
     {
         printf("not enough memory for newList\n");
@@ -62,7 +65,7 @@ static void dynamicArrayResize(DynamicArray *dynamicArray)
     {
         newList[i] = dynamicArray->list[i];
     }
-    freeDynamicArrayList(dynamicArray->list, dynamicArray->size);
+    freeDynamicArrayList(dynamicArray->list, dynamicArray->size, false);
     dynamicArray->list = newList;
     dynamicArray->capacity *= size_multiple;
 }
@@ -72,19 +75,31 @@ static inline bool isDynamicArrayFull(DynamicArray *dynamicArray)
     return dynamicArray->capacity == dynamicArray->size;
 }
 
-static void freeDynamicArrayListElement(void *element)
+static void freeDynamicArrayListElement(DynamicArrayElement *element)
 {
-    if (element != NULL)
+    if (element == NULL)
     {
-        free(element);
+        return;
     }
+    if (element->value != NULL)
+    {
+        free(element->value);
+    }
+    free(element);
 }
 
-static void freeDynamicArrayList(void **list, unsigned int size)
+static void freeDynamicArrayList(DynamicArrayElement **list, unsigned int size, bool deep)
 {
-    for (unsigned int i = 0; i < size; i++)
+    if (list == NULL)
     {
-        freeDynamicArrayListElement(list[i]);
+        return;
+    }
+    if (deep)
+    {
+        for (unsigned int i = 0; i < size; i++)
+        {
+            freeDynamicArrayListElement(list[i]);
+        }
     }
     free(list);
 }
@@ -97,9 +112,23 @@ void FreeDynamicArray(DynamicArray *dynamicArray)
     }
     if (dynamicArray->list != NULL)
     {
-        freeDynamicArrayList(dynamicArray->list, dynamicArray->size);
+        freeDynamicArrayList(dynamicArray->list, dynamicArray->size, true);
     }
     free(dynamicArray);
+}
+
+static void printIntArr(int *arr, unsigned int len)
+{
+    printf("[");
+    for (unsigned int i = 0; i < len; i++)
+    {
+        printf("%d", arr[i]);
+        if (i != len - 1)
+        {
+            printf(",");
+        }
+    }
+    printf("]");
 }
 
 void PrintDynamicArray(DynamicArray *dynamicArray)
@@ -108,8 +137,27 @@ void PrintDynamicArray(DynamicArray *dynamicArray)
     {
         return;
     }
+    printf("[");
     for (unsigned int i = 0; i < dynamicArray->size; i++)
     {
-        printf("%d\n", i);
+        switch (dynamicArray->list[i]->type)
+        {
+        case CHAR_ARR_t:
+            printf("\"%s\"", (char *)dynamicArray->list[i]->value);
+            break;
+        case INT_ARR_t:
+            printIntArr((int *)dynamicArray->list[i]->value, dynamicArray->list[i]->len);
+            break;
+        case INT_t:
+            printf("%d", *(int *)dynamicArray->list[i]->value);
+            break;
+        default:
+            break;
+        }
+        if (i != dynamicArray->size - 1)
+        {
+            printf(", ");
+        }
     }
+    printf("]\n");
 }
