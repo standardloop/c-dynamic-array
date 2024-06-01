@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "dynamic-array.h": "c",
+        "stdlib.h": "c",
+        "cmath": "c",
+        "locale": "cpp"
+    }
+}
