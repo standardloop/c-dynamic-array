@@ -1,6 +1,8 @@
 #ifndef DYNAMIC_ARRAY_H
 #define DYNAMIC_ARRAY_H
 
+#define RESIZE_MULTIPLE 2
+
 enum DynamicArrayElementType
 {
     INT_ARR_t,
@@ -27,10 +29,13 @@ DynamicArray *DefaultDynamicArrayInit(void);
 
 DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType, void *, unsigned int);
 
-void DynamicArrayAdd(DynamicArray *, DynamicArrayElement *);
+void DynamicArrayAddFirst(DynamicArray *, DynamicArrayElement *);
+void DynamicArrayAddLast(DynamicArray *, DynamicArrayElement *);
+void DynamicArrayAdd(DynamicArray *, DynamicArrayElement *, unsigned int);
+
 void DynamicArrayRemove(DynamicArray *, unsigned int);
-void DynamicArrayRemoveFirstElement(DynamicArray *);
-void DynamicArrayRemoveLastElement(DynamicArray *);
+void DynamicArrayRemoveFirst(DynamicArray *);
+void DynamicArrayRemoveLast(DynamicArray *);
 
 void PrintDynamicArray(DynamicArray *);
 void FreeDynamicArray(DynamicArray *);

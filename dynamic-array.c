@@ -31,7 +31,17 @@ DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
     return dynamicArray;
 }
 
-void DynamicArrayAdd(DynamicArray *dynamicArray, DynamicArrayElement *element)
+void DynamicArrayAddFirst(DynamicArray *dynamicArray, DynamicArrayElement *element)
+{
+    DynamicArrayAdd(dynamicArray, element, 0);
+}
+
+void DynamicArrayAddLast(DynamicArray *dynamicArray, DynamicArrayElement *element)
+{
+    DynamicArrayAdd(dynamicArray, element, dynamicArray->size - 1);
+}
+
+void DynamicArrayAdd(DynamicArray *dynamicArray, DynamicArrayElement *element, unsigned int index)
 {
     if (dynamicArray == NULL || element == NULL)
     {
@@ -41,8 +51,12 @@ void DynamicArrayAdd(DynamicArray *dynamicArray, DynamicArrayElement *element)
     {
         dynamicArrayResize(dynamicArray);
     }
+    for (unsigned int i = dynamicArray->size; i > index; i--)
+    {
+        dynamicArray->list[i] = dynamicArray->list[i - 1];
+    }
 
-    dynamicArray->list[dynamicArray->size] = element;
+    dynamicArray->list[index] = element;
     dynamicArray->size++;
 }
 
@@ -52,10 +66,8 @@ static void dynamicArrayResize(DynamicArray *dynamicArray)
     {
         return;
     }
-    printf("[INFO]: resizing array\n");
-    const unsigned int size_multiple = 2;
-    // double the capacity
-    DynamicArrayElement **newList = malloc(sizeof(DynamicArrayElement *) * dynamicArray->capacity * size_multiple);
+
+    DynamicArrayElement **newList = malloc(sizeof(DynamicArrayElement *) * dynamicArray->capacity * RESIZE_MULTIPLE);
     if (newList == NULL)
     {
         printf("not enough memory for newList\n");
@@ -68,7 +80,7 @@ static void dynamicArrayResize(DynamicArray *dynamicArray)
     }
     freeDynamicArrayList(dynamicArray->list, dynamicArray->size, false);
     dynamicArray->list = newList;
-    dynamicArray->capacity *= size_multiple;
+    dynamicArray->capacity *= RESIZE_MULTIPLE;
 }
 
 static inline bool isDynamicArrayFull(DynamicArray *dynamicArray)
@@ -184,7 +196,7 @@ void DynamicArrayRemove(DynamicArray *dynamicArray, unsigned int index)
     dynamicArray->size--;
 }
 
-void DynamicArrayRemoveFirstElement(DynamicArray *dynamicArray)
+void DynamicArrayRemoveFirst(DynamicArray *dynamicArray)
 {
     if (dynamicArray == NULL)
     {
