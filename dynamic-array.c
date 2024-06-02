@@ -10,7 +10,7 @@ static void freeDynamicArrayList(DynamicArrayElement **, unsigned int, bool);
 static void freeDynamicArrayListElement(DynamicArrayElement *element);
 static void dynamicArrayResize(DynamicArray *);
 
-static void printIntArr(int *, unsigned int);
+static void printIntArr(int *, unsigned int, bool);
 
 DynamicArray *DefaultDynamicArrayInit(void)
 {
@@ -135,36 +135,58 @@ void FreeDynamicArray(DynamicArray *dynamicArray)
     free(dynamicArray);
 }
 
-static void printIntArr(int *arr, unsigned int len)
+static void printIntArr(int *arr, unsigned int len, bool pretty)
 {
     printf("[");
+    if (pretty)
+    {
+        printf("\n");
+    }
     for (unsigned int i = 0; i < len; i++)
     {
+        if (pretty)
+        {
+            printf("    ");
+        }
         printf("%d", arr[i]);
         if (i != len - 1)
         {
+
             printf(",");
         }
+        if (pretty)
+        {
+            printf("\n");
+        }
+    }
+    if (pretty)
+    {
+        printf("  ");
     }
     printf("]");
 }
 
-void PrintDynamicArray(DynamicArray *dynamicArray)
+void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty)
 {
     if (dynamicArray == NULL)
     {
         return;
     }
     printf("[");
+    if (pretty)
+    {
+        printf("\n  ");
+    }
     for (unsigned int i = 0; i < dynamicArray->size; i++)
     {
+
         switch (dynamicArray->list[i]->type)
         {
         case CHAR_ARR_t:
             printf("\"%s\"", (char *)dynamicArray->list[i]->value);
             break;
         case INT_ARR_t:
-            printIntArr((int *)dynamicArray->list[i]->value, dynamicArray->list[i]->len);
+            printIntArr((int *)dynamicArray->list[i]->value, dynamicArray->list[i]->len, false);
             break;
         case INT_t:
             printf("%d", *(int *)dynamicArray->list[i]->value);
@@ -174,8 +196,19 @@ void PrintDynamicArray(DynamicArray *dynamicArray)
         }
         if (i != dynamicArray->size - 1)
         {
-            printf(", ");
+            if (pretty)
+            {
+                printf(",\n  ");
+            }
+            else
+            {
+                printf(", ");
+            }
         }
+    }
+    if (pretty)
+    {
+        printf("\n");
     }
     printf("]\n");
 }

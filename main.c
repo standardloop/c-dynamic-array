@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+#include <stdbool.h>
 
 #include "./dynamic-array.h"
 
@@ -36,8 +36,8 @@ int main(void)
     DynamicArrayElement *single_int_ele = DynamicArrayElementInit(INT_t, single_int_ele_value, 1);
     DynamicArrayAddLast(dynamicArray, single_int_ele);
 
-    DynamicArrayRemoveFirst(dynamicArray);
-    PrintDynamicArray(dynamicArray);
+    // DynamicArrayRemoveFirst(dynamicArray);
+    PrintDynamicArray(dynamicArray, true);
 
     FreeDynamicArray(dynamicArray);
     return EXIT_SUCCESS;

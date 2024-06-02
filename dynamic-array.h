@@ -37,7 +37,7 @@ void DynamicArrayRemove(DynamicArray *, unsigned int);
 void DynamicArrayRemoveFirst(DynamicArray *);
 void DynamicArrayRemoveLast(DynamicArray *);
 
-void PrintDynamicArray(DynamicArray *);
+void PrintDynamicArray(DynamicArray *, bool);
 void FreeDynamicArray(DynamicArray *);
 
 #endif
