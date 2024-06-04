@@ -24,78 +24,78 @@ DynamicArray *DefaultDynamicArrayInit(void)
 
 DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
 {
-    DynamicArray *dynamicArray = malloc(sizeof(DynamicArray));
-    if (dynamicArray == NULL)
+    DynamicArray *dynamic_array = malloc(sizeof(DynamicArray));
+    if (dynamic_array == NULL)
     {
         printf("[ERROR]: could not allocate memory for DynamicArray\n");
         return NULL;
     }
-    dynamicArray->size = 0;
-    dynamicArray->capacity = initial_capacity;
-    dynamicArray->list = malloc(sizeof(DynamicArrayElement *) * dynamicArray->capacity);
-    return dynamicArray;
+    dynamic_array->size = 0;
+    dynamic_array->capacity = initial_capacity;
+    dynamic_array->list = malloc(sizeof(DynamicArrayElement *) * dynamic_array->capacity);
+    return dynamic_array;
 }
 
-void DynamicArrayAddFirst(DynamicArray *dynamicArray, DynamicArrayElement *element)
+void DynamicArrayAddFirst(DynamicArray *dynamic_array, DynamicArrayElement *element)
 {
-    DynamicArrayAdd(dynamicArray, element, 0);
+    DynamicArrayAdd(dynamic_array, element, 0);
 }
 
-void DynamicArrayAddLast(DynamicArray *dynamicArray, DynamicArrayElement *element)
+void DynamicArrayAddLast(DynamicArray *dynamic_array, DynamicArrayElement *element)
 {
-    DynamicArrayAdd(dynamicArray, element, dynamicArray->size - 1);
+    DynamicArrayAdd(dynamic_array, element, dynamic_array->size - 1);
 }
 
-void DynamicArrayAdd(DynamicArray *dynamicArray, DynamicArrayElement *element, unsigned int index)
+void DynamicArrayAdd(DynamicArray *dynamic_array, DynamicArrayElement *element, unsigned int index)
 {
-    if (dynamicArray == NULL || element == NULL)
+    if (dynamic_array == NULL || element == NULL)
     {
         return;
     }
-    if (isDynamicArrayFull(dynamicArray))
+    if (isDynamicArrayFull(dynamic_array))
     {
-        dynamicArrayResize(dynamicArray);
+        dynamicArrayResize(dynamic_array);
     }
-    for (unsigned int i = dynamicArray->size; i > index; i--)
+    for (unsigned int i = dynamic_array->size; i > index; i--)
     {
-        dynamicArray->list[i] = dynamicArray->list[i - 1];
+        dynamic_array->list[i] = dynamic_array->list[i - 1];
     }
 
-    dynamicArray->list[index] = element;
-    dynamicArray->size++;
+    dynamic_array->list[index] = element;
+    dynamic_array->size++;
 }
 
-static void dynamicArrayResize(DynamicArray *dynamicArray)
+static void dynamicArrayResize(DynamicArray *dynamic_array)
 {
-    if (dynamicArray == NULL)
+    if (dynamic_array == NULL)
     {
         return;
     }
 
-    DynamicArrayElement **newList = malloc(sizeof(DynamicArrayElement *) * dynamicArray->capacity * RESIZE_MULTIPLE);
+    DynamicArrayElement **newList = malloc(sizeof(DynamicArrayElement *) * dynamic_array->capacity * RESIZE_MULTIPLE);
     if (newList == NULL)
     {
         printf("not enough memory for newList\n");
         return; // FIXME
     }
 
-    for (unsigned int i = 0; i < dynamicArray->size; i++)
+    for (unsigned int i = 0; i < dynamic_array->size; i++)
     {
-        newList[i] = dynamicArray->list[i];
+        newList[i] = dynamic_array->list[i];
     }
-    freeDynamicArrayList(dynamicArray->list, dynamicArray->size, false);
-    dynamicArray->list = newList;
-    dynamicArray->capacity *= RESIZE_MULTIPLE;
+    freeDynamicArrayList(dynamic_array->list, dynamic_array->size, false);
+    dynamic_array->list = newList;
+    dynamic_array->capacity *= RESIZE_MULTIPLE;
 }
 
-static inline bool isDynamicArrayFull(DynamicArray *dynamicArray)
+static inline bool isDynamicArrayFull(DynamicArray *dynamic_array)
 {
-    return dynamicArray->capacity == dynamicArray->size;
+    return dynamic_array->capacity == dynamic_array->size;
 }
 
-static inline bool isDynamicArrayEmpty(DynamicArray *dynamicArray)
+static inline bool isDynamicArrayEmpty(DynamicArray *dynamic_array)
 {
-    return dynamicArray->size == 0;
+    return dynamic_array->size == 0;
 }
 
 static void freeDynamicArrayListElement(DynamicArrayElement *element)
@@ -135,17 +135,17 @@ static void freeDynamicArrayList(DynamicArrayElement **list, unsigned int size, 
     free(list);
 }
 
-void FreeDynamicArray(DynamicArray *dynamicArray)
+void FreeDynamicArray(DynamicArray *dynamic_array)
 {
-    if (dynamicArray == NULL)
+    if (dynamic_array == NULL)
     {
         return;
     }
-    if (dynamicArray->list != NULL)
+    if (dynamic_array->list != NULL)
     {
-        freeDynamicArrayList(dynamicArray->list, dynamicArray->size, true);
+        freeDynamicArrayList(dynamic_array->list, dynamic_array->size, true);
     }
-    free(dynamicArray);
+    free(dynamic_array);
 }
 
 static inline void printSpaces(int depth)
@@ -187,28 +187,28 @@ static void printIntArr(int *arr, unsigned int len, bool pretty, int depth)
     printf("]");
 }
 
-static void printDynamicArrayHelper(DynamicArray *dynamicArray, bool pretty, int depth)
+static void printDynamicArrayHelper(DynamicArray *dynamic_array, bool pretty, int depth)
 {
-    for (unsigned int i = 0; i < dynamicArray->size; i++)
+    for (unsigned int i = 0; i < dynamic_array->size; i++)
     {
-        switch (dynamicArray->list[i]->type)
+        switch (dynamic_array->list[i]->type)
         {
         case CHAR_ARR_t:
-            printf("\"%s\"", (char *)dynamicArray->list[i]->value);
+            printf("\"%s\"", (char *)dynamic_array->list[i]->value);
             break;
         case INT_ARR_t:
-            printIntArr((int *)dynamicArray->list[i]->value, dynamicArray->list[i]->len, false, depth * 2);
+            printIntArr((int *)dynamic_array->list[i]->value, dynamic_array->list[i]->len, false, depth * 2);
             break;
         case INT_t:
-            printf("%d", *(int *)dynamicArray->list[i]->value);
+            printf("%d", *(int *)dynamic_array->list[i]->value);
             break;
         case DYN_ARR_t:
-            PrintDynamicArray(dynamicArray->list[i]->value, pretty, depth * 2);
+            PrintDynamicArray(dynamic_array->list[i]->value, pretty, depth * 2);
             break;
         default:
             break;
         }
-        if (i != dynamicArray->size - 1)
+        if (i != dynamic_array->size - 1)
         {
             if (pretty)
             {
@@ -238,9 +238,9 @@ static void printDynamicArrayHelper(DynamicArray *dynamicArray, bool pretty, int
     }
 }
 
-void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty, int depth)
+void PrintDynamicArray(DynamicArray *dynamic_array, bool pretty, int depth)
 {
-    if (dynamicArray == NULL)
+    if (dynamic_array == NULL)
     {
         return;
     }
@@ -250,41 +250,41 @@ void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty, int depth)
         printf("\n");
         printSpaces(depth);
     }
-    printDynamicArrayHelper(dynamicArray, pretty, depth);
+    printDynamicArrayHelper(dynamic_array, pretty, depth);
 }
 
-void DynamicArrayRemove(DynamicArray *dynamicArray, unsigned int index)
+void DynamicArrayRemove(DynamicArray *dynamic_array, unsigned int index)
 {
-    if (dynamicArray == NULL || index >= dynamicArray->size || isDynamicArrayEmpty(dynamicArray))
+    if (dynamic_array == NULL || index >= dynamic_array->size || isDynamicArrayEmpty(dynamic_array))
     {
         return;
     }
-    freeDynamicArrayListElement(dynamicArray->list[index]);
+    freeDynamicArrayListElement(dynamic_array->list[index]);
 
-    for (unsigned int i = index + 1; i < dynamicArray->size; i++)
+    for (unsigned int i = index + 1; i < dynamic_array->size; i++)
     {
-        dynamicArray->list[i - 1] = dynamicArray->list[i];
+        dynamic_array->list[i - 1] = dynamic_array->list[i];
     }
 
-    dynamicArray->size--;
+    dynamic_array->size--;
 }
 
-void DynamicArrayRemoveFirst(DynamicArray *dynamicArray)
+void DynamicArrayRemoveFirst(DynamicArray *dynamic_array)
 {
-    if (dynamicArray == NULL)
+    if (dynamic_array == NULL)
     {
         return;
     }
-    DynamicArrayRemove(dynamicArray, 0);
+    DynamicArrayRemove(dynamic_array, 0);
 }
 
-void DynamicArrayRemoveLastElement(DynamicArray *dynamicArray)
+void DynamicArrayRemoveLastElement(DynamicArray *dynamic_array)
 {
-    if (dynamicArray == NULL)
+    if (dynamic_array == NULL)
     {
         return;
     }
-    DynamicArrayRemove(dynamicArray, dynamicArray->size - 1);
+    DynamicArrayRemove(dynamic_array, dynamic_array->size - 1);
 }
 
 DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType type, void *value, unsigned int len)
@@ -326,17 +326,17 @@ static DynamicArrayElement *dynamicArrayElementReplicate(DynamicArrayElement *dy
     return DynamicArrayElementInit(dynamicArrayElement->type, value, dynamicArrayElement->len);
 }
 
-DynamicArray *DynamicArrayReplicate(DynamicArray *dynamicArray)
+DynamicArray *DynamicArrayReplicate(DynamicArray *dynamic_array)
 {
-    if (dynamicArray == NULL)
+    if (dynamic_array == NULL)
     {
         return NULL;
     }
-    DynamicArray *deep_clone = DynamicArrayInit(dynamicArray->capacity);
+    DynamicArray *deep_clone = DynamicArrayInit(dynamic_array->capacity);
 
-    for (unsigned int i = 0; i < dynamicArray->size; i++)
+    for (unsigned int i = 0; i < dynamic_array->size; i++)
     {
-        deep_clone->list[i] = dynamicArrayElementReplicate(dynamicArray->list[i]);
+        deep_clone->list[i] = dynamicArrayElementReplicate(dynamic_array->list[i]);
         deep_clone->size++;
     }
     return deep_clone;
@@ -355,10 +355,10 @@ DynamicArray *DynamicArrayInitFromStr(char *input_str)
         printf("invalid input to DynamicArrayInitFromStr\n");
         return NULL;
     }
-    DynamicArray *dynamicArray = DefaultDynamicArrayInit();
-    if (dynamicArray == NULL)
+    DynamicArray *dynamic_array = DefaultDynamicArrayInit();
+    if (dynamic_array == NULL)
     {
-        printf("out of memory for dynamicArray\n");
+        printf("out of memory for dynamic_array\n");
         return NULL;
     }
 
@@ -374,5 +374,5 @@ DynamicArray *DynamicArrayInitFromStr(char *input_str)
         input_str++;
     }
 
-    return dynamicArray;
+    return dynamic_array;
 }

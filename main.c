@@ -5,52 +5,57 @@
 
 #include "./dynamic-array.h"
 
+static char *quickString(char *);
+static int *quickInt(int);
+
+static char *quickString(char *input)
+{
+    char *new_str = malloc(sizeof(char) * (strlen(input) + 1));
+    strcpy(new_str, input);
+    return new_str;
+}
+
+static int *quickInt(int size)
+{
+    int *int_arr = malloc(sizeof(int) * size);
+    for (int i = 0; i < size; i++)
+    {
+        int_arr[i] = i;
+    }
+    return int_arr;
+}
+
 int main(void)
 {
-    DynamicArray *dynamicArray = DefaultDynamicArrayInit();
-    if (dynamicArray == NULL)
+    DynamicArray *dynamic_array = DefaultDynamicArrayInit();
+    if (dynamic_array == NULL)
     {
         return EXIT_FAILURE;
     }
 
-    // add a string to the array
-    size_t string_ele_length = 6;
-    char *string_ele_value = malloc(sizeof(char) * string_ele_length);
-    strcpy(string_ele_value, "hello");
-    DynamicArrayElement *string_ele = DynamicArrayElementInit(CHAR_ARR_t, string_ele_value, string_ele_length);
-    DynamicArrayAddFirst(dynamicArray, string_ele);
+    DynamicArrayElement *string_ele = DynamicArrayElementInit(CHAR_ARR_t, quickString("hello"), 6);
+    DynamicArrayAddFirst(dynamic_array, string_ele);
 
     // add an int array to the array
-    size_t int_arr_ele_length = 6;
-    int *int_arr_ele_value = malloc(sizeof(int) * int_arr_ele_length);
-    for (int i = 0; i < (int)int_arr_ele_length; i++)
-    {
-        int_arr_ele_value[i] = i;
-    }
-    DynamicArrayElement *int_arr_ele = DynamicArrayElementInit(INT_ARR_t, int_arr_ele_value, int_arr_ele_length);
-    DynamicArrayAddFirst(dynamicArray, int_arr_ele);
+    DynamicArrayElement *int_arr_ele = DynamicArrayElementInit(INT_ARR_t, quickInt(6), 6);
+    DynamicArrayAddFirst(dynamic_array, int_arr_ele);
 
     // add an int to the array
     int *single_int_ele_value = malloc(sizeof(int) * 1);
     *single_int_ele_value = 1000;
     DynamicArrayElement *single_int_ele = DynamicArrayElementInit(INT_t, single_int_ele_value, 1);
-    DynamicArrayAddLast(dynamicArray, single_int_ele);
+    DynamicArrayAddLast(dynamic_array, single_int_ele);
 
-    // DynamicArrayRemoveFirst(dynamicArray);
-    // PrintDynamicArray(dynamicArray, true, 2);
-
+    // add a dynamic array to the dynamic array
     DynamicArray *dynamicArray_2 = DefaultDynamicArrayInit();
-    DynamicArrayElement *dyn_arr_ele = DynamicArrayElementInit(DYN_ARR_t, dynamicArray, dynamicArray->size);
+    DynamicArrayElement *dyn_arr_ele = DynamicArrayElementInit(DYN_ARR_t, dynamic_array, dynamic_array->size);
     DynamicArrayAddFirst(dynamicArray_2, dyn_arr_ele);
 
-    // PrintDynamicArray(dynamicArray_2, true, 2);
-
+    // create a copy of the dynamic array and free the old one
     DynamicArray *copy = DynamicArrayReplicate(dynamicArray_2);
-
     FreeDynamicArray(dynamicArray_2);
 
     DynamicArray *copy_again = DynamicArrayReplicate(copy);
-
     DynamicArrayElement *dyn_arr_ele_2 = DynamicArrayElementInit(DYN_ARR_t, copy, copy->size);
     DynamicArrayAddFirst(copy_again, dyn_arr_ele_2);
 
