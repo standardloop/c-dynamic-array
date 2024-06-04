@@ -2,12 +2,21 @@
 #define DYNAMIC_ARRAY_H
 
 #define RESIZE_MULTIPLE 2
+#define DEFAULT_LIST_SIZE 5
+
+#define BRACKET_OPEN_CHAR '['
+#define BRACKET_CLOSE_CHAR ']'
+#define SPACE_CHAR ' '
+#define COMMA_CHAR ','
+
+#define NULL_CHAR '\0'
 
 enum DynamicArrayElementType
 {
     INT_ARR_t,
     INT_t,
     CHAR_ARR_t,
+    DYN_ARR_t,
 };
 
 typedef struct
@@ -37,7 +46,9 @@ void DynamicArrayRemove(DynamicArray *, unsigned int);
 void DynamicArrayRemoveFirst(DynamicArray *);
 void DynamicArrayRemoveLast(DynamicArray *);
 
-void PrintDynamicArray(DynamicArray *, bool);
+void PrintDynamicArray(DynamicArray *, bool, int);
 void FreeDynamicArray(DynamicArray *);
+
+DynamicArray *DynamicArrayInitFromStr(char *);
 
 #endif

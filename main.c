@@ -37,8 +37,20 @@ int main(void)
     DynamicArrayAddLast(dynamicArray, single_int_ele);
 
     // DynamicArrayRemoveFirst(dynamicArray);
-    PrintDynamicArray(dynamicArray, true);
+    // PrintDynamicArray(dynamicArray, true, 2);
 
-    FreeDynamicArray(dynamicArray);
+    DynamicArray *dynamicArray_2 = DefaultDynamicArrayInit();
+    DynamicArrayElement *dyn_arr_ele = DynamicArrayElementInit(DYN_ARR_t, dynamicArray, dynamicArray->size);
+    DynamicArrayAddFirst(dynamicArray_2, dyn_arr_ele);
+
+    PrintDynamicArray(dynamicArray_2, true, 2);
+    FreeDynamicArray(dynamicArray_2);
+
+    // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[1]");
+    // if (dynamicArryFromStr == NULL)
+    // {
+    //     return EXIT_FAILURE;
+    // }
+
     return EXIT_SUCCESS;
 }

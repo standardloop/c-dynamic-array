@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "./dynamic-array.h"
 
@@ -10,11 +11,13 @@ static void freeDynamicArrayList(DynamicArrayElement **, unsigned int, bool);
 static void freeDynamicArrayListElement(DynamicArrayElement *element);
 static void dynamicArrayResize(DynamicArray *);
 
-static void printIntArr(int *, unsigned int, bool);
+static void printIntArr(int *, unsigned int, bool, int);
+static void printDynamicArrayHelper(DynamicArray *, bool, int);
+static inline void printSpaces(int);
 
 DynamicArray *DefaultDynamicArrayInit(void)
 {
-    return DynamicArrayInit(1);
+    return DynamicArrayInit(DEFAULT_LIST_SIZE);
 }
 
 DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
@@ -99,11 +102,19 @@ static void freeDynamicArrayListElement(DynamicArrayElement *element)
     {
         return;
     }
+
     if (element->value != NULL)
     {
-        free(element->value);
+        if (element->type == DYN_ARR_t)
+        {
+            FreeDynamicArray(element->value);
+        }
+        else
+        {
+            free(element->value);
+        }
+        free(element);
     }
-    free(element);
 }
 
 static void freeDynamicArrayList(DynamicArrayElement **list, unsigned int size, bool deep)
@@ -135,7 +146,15 @@ void FreeDynamicArray(DynamicArray *dynamicArray)
     free(dynamicArray);
 }
 
-static void printIntArr(int *arr, unsigned int len, bool pretty)
+static inline void printSpaces(int depth)
+{
+    for (int i = 0; i < depth; i++)
+    {
+        printf(" ");
+    }
+}
+
+static void printIntArr(int *arr, unsigned int len, bool pretty, int depth)
 {
     printf("[");
     if (pretty)
@@ -146,7 +165,7 @@ static void printIntArr(int *arr, unsigned int len, bool pretty)
     {
         if (pretty)
         {
-            printf("    ");
+            printSpaces(depth);
         }
         printf("%d", arr[i]);
         if (i != len - 1)
@@ -161,35 +180,28 @@ static void printIntArr(int *arr, unsigned int len, bool pretty)
     }
     if (pretty)
     {
-        printf("  ");
+        printSpaces(depth);
     }
     printf("]");
 }
 
-void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty)
+static void printDynamicArrayHelper(DynamicArray *dynamicArray, bool pretty, int depth)
 {
-    if (dynamicArray == NULL)
-    {
-        return;
-    }
-    printf("[");
-    if (pretty)
-    {
-        printf("\n  ");
-    }
     for (unsigned int i = 0; i < dynamicArray->size; i++)
     {
-
         switch (dynamicArray->list[i]->type)
         {
         case CHAR_ARR_t:
             printf("\"%s\"", (char *)dynamicArray->list[i]->value);
             break;
         case INT_ARR_t:
-            printIntArr((int *)dynamicArray->list[i]->value, dynamicArray->list[i]->len, false);
+            printIntArr((int *)dynamicArray->list[i]->value, dynamicArray->list[i]->len, false, depth * 2);
             break;
         case INT_t:
             printf("%d", *(int *)dynamicArray->list[i]->value);
+            break;
+        case DYN_ARR_t:
+            PrintDynamicArray(dynamicArray->list[i]->value, pretty, depth * 2);
             break;
         default:
             break;
@@ -198,7 +210,8 @@ void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty)
         {
             if (pretty)
             {
-                printf(",\n  ");
+                printf(",\n");
+                printSpaces(depth);
             }
             else
             {
@@ -210,7 +223,32 @@ void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty)
     {
         printf("\n");
     }
-    printf("]\n");
+    depth /= 2;
+    if (depth == 1)
+    {
+        depth--;
+    }
+    printSpaces(depth);
+    printf("]");
+    if (depth == 0)
+    {
+        printf("\n");
+    }
+}
+
+void PrintDynamicArray(DynamicArray *dynamicArray, bool pretty, int depth)
+{
+    if (dynamicArray == NULL)
+    {
+        return;
+    }
+    printf("[");
+    if (pretty)
+    {
+        printf("\n");
+        printSpaces(depth);
+    }
+    printDynamicArrayHelper(dynamicArray, pretty, depth);
 }
 
 void DynamicArrayRemove(DynamicArray *dynamicArray, unsigned int index)
@@ -258,4 +296,39 @@ DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType type, 
     dynamicArrayElement->value = value;
     dynamicArrayElement->len = len;
     return dynamicArrayElement;
+}
+
+DynamicArray *DynamicArrayInitFromStr(char *input_str)
+{
+    if (input_str == NULL)
+    {
+        printf("invalid input to DynamicArrayInitFromStr\n");
+        return NULL;
+    }
+    size_t input_str_len = strlen(input_str);
+    if (input_str_len == 0 || input_str[0] != BRACKET_OPEN_CHAR || input_str[input_str_len - 1] != BRACKET_CLOSE_CHAR)
+    {
+        printf("invalid input to DynamicArrayInitFromStr\n");
+        return NULL;
+    }
+    DynamicArray *dynamicArray = DefaultDynamicArrayInit();
+    if (dynamicArray == NULL)
+    {
+        printf("out of memory for dynamicArray\n");
+        return NULL;
+    }
+
+    // char *value_start = input_str;
+    char *value_end = input_str;
+    for (size_t i = 0; i < input_str_len && *input_str != NULL_CHAR; i++)
+    {
+        if (*input_str == COMMA_CHAR)
+        {
+            value_end = input_str;
+            printf("%c\n", *value_end);
+        }
+        input_str++;
+    }
+
+    return dynamicArray;
 }
