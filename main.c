@@ -43,8 +43,20 @@ int main(void)
     DynamicArrayElement *dyn_arr_ele = DynamicArrayElementInit(DYN_ARR_t, dynamicArray, dynamicArray->size);
     DynamicArrayAddFirst(dynamicArray_2, dyn_arr_ele);
 
-    PrintDynamicArray(dynamicArray_2, true, 2);
+    // PrintDynamicArray(dynamicArray_2, true, 2);
+
+    DynamicArray *copy = DynamicArrayReplicate(dynamicArray_2);
+
     FreeDynamicArray(dynamicArray_2);
+
+    DynamicArray *copy_again = DynamicArrayReplicate(copy);
+
+    DynamicArrayElement *dyn_arr_ele_2 = DynamicArrayElementInit(DYN_ARR_t, copy, copy->size);
+    DynamicArrayAddFirst(copy_again, dyn_arr_ele_2);
+
+    PrintDynamicArray(copy_again, true, 2);
+
+    FreeDynamicArray(copy_again);
 
     // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[1]");
     // if (dynamicArryFromStr == NULL)

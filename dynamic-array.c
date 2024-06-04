@@ -11,6 +11,8 @@ static void freeDynamicArrayList(DynamicArrayElement **, unsigned int, bool);
 static void freeDynamicArrayListElement(DynamicArrayElement *element);
 static void dynamicArrayResize(DynamicArray *);
 
+static DynamicArrayElement *dynamicArrayElementReplicate(DynamicArrayElement *);
+
 static void printIntArr(int *, unsigned int, bool, int);
 static void printDynamicArrayHelper(DynamicArray *, bool, int);
 static inline void printSpaces(int);
@@ -296,6 +298,48 @@ DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType type, 
     dynamicArrayElement->value = value;
     dynamicArrayElement->len = len;
     return dynamicArrayElement;
+}
+
+static DynamicArrayElement *dynamicArrayElementReplicate(DynamicArrayElement *dynamicArrayElement)
+{
+    if (dynamicArrayElement == NULL)
+    {
+        return NULL;
+    }
+    void *value = NULL;
+    switch (dynamicArrayElement->type)
+    {
+    case INT_t:
+    case INT_ARR_t:
+        value = (int *)malloc(sizeof(int) * dynamicArrayElement->len);
+        memcpy(value, dynamicArrayElement->value, sizeof(int) * dynamicArrayElement->len);
+        break;
+    case CHAR_ARR_t:
+        value = (char *)malloc(sizeof(char) * dynamicArrayElement->len);
+        memcpy(value, dynamicArrayElement->value, sizeof(char) * dynamicArrayElement->len);
+        break;
+    case DYN_ARR_t:
+        value = (DynamicArray *)DynamicArrayReplicate(dynamicArrayElement->value);
+    default:
+        break;
+    }
+    return DynamicArrayElementInit(dynamicArrayElement->type, value, dynamicArrayElement->len);
+}
+
+DynamicArray *DynamicArrayReplicate(DynamicArray *dynamicArray)
+{
+    if (dynamicArray == NULL)
+    {
+        return NULL;
+    }
+    DynamicArray *deep_clone = DynamicArrayInit(dynamicArray->capacity);
+
+    for (unsigned int i = 0; i < dynamicArray->size; i++)
+    {
+        deep_clone->list[i] = dynamicArrayElementReplicate(dynamicArray->list[i]);
+        deep_clone->size++;
+    }
+    return deep_clone;
 }
 
 DynamicArray *DynamicArrayInitFromStr(char *input_str)

@@ -35,6 +35,8 @@ typedef struct
 
 DynamicArray *DynamicArrayInit(unsigned int);
 DynamicArray *DefaultDynamicArrayInit(void);
+DynamicArray *DynamicArrayInitFromStr(char *);
+DynamicArray *DynamicArrayReplicate(DynamicArray *);
 
 DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType, void *, unsigned int);
 
@@ -48,7 +50,5 @@ void DynamicArrayRemoveLast(DynamicArray *);
 
 void PrintDynamicArray(DynamicArray *, bool, int);
 void FreeDynamicArray(DynamicArray *);
-
-DynamicArray *DynamicArrayInitFromStr(char *);
 
 #endif
