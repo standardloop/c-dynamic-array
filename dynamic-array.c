@@ -203,7 +203,7 @@ static void printDynamicArrayHelper(DynamicArray *dynamic_array, bool pretty, in
             printf("%d", *(int *)dynamic_array->list[i]->value);
             break;
         case DYN_ARR_t:
-            PrintDynamicArray(dynamic_array->list[i]->value, pretty, depth * 2);
+            PrintDynamicArray(dynamic_array->list[i]->value, pretty, depth + 2);
             break;
         default:
             break;
@@ -225,7 +225,7 @@ static void printDynamicArrayHelper(DynamicArray *dynamic_array, bool pretty, in
     {
         printf("\n");
     }
-    depth /= 2;
+    depth -= 2;
     if (depth == 1)
     {
         depth--;
