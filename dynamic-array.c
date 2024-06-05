@@ -17,12 +17,12 @@ static void printIntArr(int *, unsigned int, bool, int);
 static void printDynamicArrayHelper(DynamicArray *, bool, int);
 static inline void printSpaces(int);
 
-DynamicArray *DefaultDynamicArrayInit(void)
+extern DynamicArray *DefaultDynamicArrayInit(void)
 {
     return DynamicArrayInit(DEFAULT_LIST_SIZE);
 }
 
-DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
+extern DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
 {
     DynamicArray *dynamic_array = malloc(sizeof(DynamicArray));
     if (dynamic_array == NULL)
@@ -36,17 +36,17 @@ DynamicArray *DynamicArrayInit(unsigned int initial_capacity)
     return dynamic_array;
 }
 
-void DynamicArrayAddFirst(DynamicArray *dynamic_array, DynamicArrayElement *element)
+extern void DynamicArrayAddFirst(DynamicArray *dynamic_array, DynamicArrayElement *element)
 {
     DynamicArrayAdd(dynamic_array, element, 0);
 }
 
-void DynamicArrayAddLast(DynamicArray *dynamic_array, DynamicArrayElement *element)
+extern void DynamicArrayAddLast(DynamicArray *dynamic_array, DynamicArrayElement *element)
 {
     DynamicArrayAdd(dynamic_array, element, dynamic_array->size - 1);
 }
 
-void DynamicArrayAdd(DynamicArray *dynamic_array, DynamicArrayElement *element, unsigned int index)
+extern void DynamicArrayAdd(DynamicArray *dynamic_array, DynamicArrayElement *element, unsigned int index)
 {
     if (dynamic_array == NULL || element == NULL)
     {
@@ -135,7 +135,7 @@ static void freeDynamicArrayList(DynamicArrayElement **list, unsigned int size, 
     free(list);
 }
 
-void FreeDynamicArray(DynamicArray *dynamic_array)
+extern void FreeDynamicArray(DynamicArray *dynamic_array)
 {
     if (dynamic_array == NULL)
     {
@@ -238,7 +238,7 @@ static void printDynamicArrayHelper(DynamicArray *dynamic_array, bool pretty, in
     }
 }
 
-void PrintDynamicArray(DynamicArray *dynamic_array, bool pretty, int depth)
+extern void PrintDynamicArray(DynamicArray *dynamic_array, bool pretty, int depth)
 {
     if (dynamic_array == NULL)
     {
@@ -253,7 +253,7 @@ void PrintDynamicArray(DynamicArray *dynamic_array, bool pretty, int depth)
     printDynamicArrayHelper(dynamic_array, pretty, depth);
 }
 
-void DynamicArrayRemove(DynamicArray *dynamic_array, unsigned int index)
+extern void DynamicArrayRemove(DynamicArray *dynamic_array, unsigned int index)
 {
     if (dynamic_array == NULL || index >= dynamic_array->size || isDynamicArrayEmpty(dynamic_array))
     {
@@ -269,7 +269,7 @@ void DynamicArrayRemove(DynamicArray *dynamic_array, unsigned int index)
     dynamic_array->size--;
 }
 
-void DynamicArrayRemoveFirst(DynamicArray *dynamic_array)
+extern void DynamicArrayRemoveFirst(DynamicArray *dynamic_array)
 {
     if (dynamic_array == NULL)
     {
@@ -278,7 +278,7 @@ void DynamicArrayRemoveFirst(DynamicArray *dynamic_array)
     DynamicArrayRemove(dynamic_array, 0);
 }
 
-void DynamicArrayRemoveLastElement(DynamicArray *dynamic_array)
+extern void DynamicArrayRemoveLastElement(DynamicArray *dynamic_array)
 {
     if (dynamic_array == NULL)
     {
@@ -287,7 +287,7 @@ void DynamicArrayRemoveLastElement(DynamicArray *dynamic_array)
     DynamicArrayRemove(dynamic_array, dynamic_array->size - 1);
 }
 
-DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType type, void *value, unsigned int len)
+extern DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType type, void *value, unsigned int len)
 {
     DynamicArrayElement *dynamicArrayElement = malloc(sizeof(DynamicArrayElement));
     if (dynamicArrayElement == NULL)
@@ -326,7 +326,7 @@ static DynamicArrayElement *dynamicArrayElementReplicate(DynamicArrayElement *dy
     return DynamicArrayElementInit(dynamicArrayElement->type, value, dynamicArrayElement->len);
 }
 
-DynamicArray *DynamicArrayReplicate(DynamicArray *dynamic_array)
+extern DynamicArray *DynamicArrayReplicate(DynamicArray *dynamic_array)
 {
     if (dynamic_array == NULL)
     {
@@ -342,7 +342,7 @@ DynamicArray *DynamicArrayReplicate(DynamicArray *dynamic_array)
     return deep_clone;
 }
 
-DynamicArray *DynamicArrayInitFromStr(char *input_str)
+extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
 {
     if (input_str == NULL)
     {

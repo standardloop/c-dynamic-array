@@ -33,22 +33,22 @@ typedef struct
     DynamicArrayElement **list;
 } DynamicArray;
 
-DynamicArray *DynamicArrayInit(unsigned int);
-DynamicArray *DefaultDynamicArrayInit(void);
-DynamicArray *DynamicArrayInitFromStr(char *);
-DynamicArray *DynamicArrayReplicate(DynamicArray *);
+extern DynamicArray *DynamicArrayInit(unsigned int);
+extern DynamicArray *DefaultDynamicArrayInit(void);
+extern DynamicArray *DynamicArrayInitFromStr(char *);
+extern DynamicArray *DynamicArrayReplicate(DynamicArray *);
 
-DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType, void *, unsigned int);
+extern DynamicArrayElement *DynamicArrayElementInit(enum DynamicArrayElementType, void *, unsigned int);
 
-void DynamicArrayAddFirst(DynamicArray *, DynamicArrayElement *);
-void DynamicArrayAddLast(DynamicArray *, DynamicArrayElement *);
-void DynamicArrayAdd(DynamicArray *, DynamicArrayElement *, unsigned int);
+extern void DynamicArrayAddFirst(DynamicArray *, DynamicArrayElement *);
+extern void DynamicArrayAddLast(DynamicArray *, DynamicArrayElement *);
+extern void DynamicArrayAdd(DynamicArray *, DynamicArrayElement *, unsigned int);
 
-void DynamicArrayRemove(DynamicArray *, unsigned int);
-void DynamicArrayRemoveFirst(DynamicArray *);
-void DynamicArrayRemoveLast(DynamicArray *);
+extern void DynamicArrayRemove(DynamicArray *, unsigned int);
+extern void DynamicArrayRemoveFirst(DynamicArray *);
+extern void DynamicArrayRemoveLast(DynamicArray *);
 
-void PrintDynamicArray(DynamicArray *, bool, int);
-void FreeDynamicArray(DynamicArray *);
+extern void PrintDynamicArray(DynamicArray *, bool, int);
+extern void FreeDynamicArray(DynamicArray *);
 
 #endif
