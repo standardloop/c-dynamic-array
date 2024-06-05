@@ -59,15 +59,18 @@ int main(void)
     DynamicArrayElement *dyn_arr_ele_2 = DynamicArrayElementInit(DYN_ARR_t, copy, copy->size);
     DynamicArrayAddFirst(copy_again, dyn_arr_ele_2);
 
-    PrintDynamicArray(copy_again, true, 2);
+    // PrintDynamicArray(copy_again, true, 2);
 
     FreeDynamicArray(copy_again);
 
-    // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[1]");
-    // if (dynamicArryFromStr == NULL)
-    // {
-    //     return EXIT_FAILURE;
-    // }
+    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[12345,    9,   12313,     3,               1]");
+    if (dynamicArryFromStr == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+    PrintDynamicArray(dynamicArryFromStr, true, 2);
+
+    FreeDynamicArray(dynamicArryFromStr);
 
     return EXIT_SUCCESS;
 }

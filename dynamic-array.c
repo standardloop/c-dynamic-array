@@ -17,6 +17,8 @@ static void printIntArr(int *, unsigned int, bool, int);
 static void printDynamicArrayHelper(DynamicArray *, bool, int);
 static inline void printSpaces(int);
 
+static void copyString(char *, char *, size_t, size_t);
+
 extern DynamicArray *DefaultDynamicArrayInit(void)
 {
     return DynamicArrayInit(DEFAULT_LIST_SIZE);
@@ -43,7 +45,11 @@ extern void DynamicArrayAddFirst(DynamicArray *dynamic_array, DynamicArrayElemen
 
 extern void DynamicArrayAddLast(DynamicArray *dynamic_array, DynamicArrayElement *element)
 {
-    DynamicArrayAdd(dynamic_array, element, dynamic_array->size - 1);
+    if (dynamic_array == NULL || element == NULL)
+    {
+        return;
+    }
+    DynamicArrayAdd(dynamic_array, element, dynamic_array->size);
 }
 
 extern void DynamicArrayAdd(DynamicArray *dynamic_array, DynamicArrayElement *element, unsigned int index)
@@ -362,17 +368,58 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
         return NULL;
     }
 
-    // char *value_start = input_str;
-    char *value_end = input_str;
-    for (size_t i = 0; i < input_str_len && *input_str != NULL_CHAR; i++)
+    input_str++;
+    char *value_start = input_str;
+    char *value_end = NULL;
+    size_t char_count = 1;
+    while (*input_str != NULL_CHAR)
     {
-        if (*input_str == COMMA_CHAR)
+        if (*input_str == COMMA_CHAR || char_count == input_str_len - 1)
         {
-            value_end = input_str;
-            printf("%c\n", *value_end);
+            value_end = input_str - 1;
+            size_t value_size = (value_end - value_start) + 1;
+            char *substring = malloc(sizeof(char) * (value_size + 1));
+            copyString(value_start, substring, value_size, 0);
+
+            substring[value_size] = NULL_CHAR;
+            // printf("%s\n", substring);
+
+            int value_temp = atoi(substring);
+            free(substring);
+            int *value = malloc(sizeof(int) * 1);
+            *value = value_temp;
+            // printf("%d\n", *value);
+            DynamicArrayAddLast(dynamic_array, DynamicArrayElementInit(INT_t, value, 1));
+
+            //  printf("[JOSH]: %d\n", value);
+            value_start = input_str + 1;
+            while (*value_start == SPACE_CHAR)
+            {
+                value_start++;
+            }
         }
         input_str++;
+        char_count++;
     }
 
     return dynamic_array;
+}
+
+static void copyString(char *src, char *des, size_t len, size_t des_offset)
+{
+    if (src == NULL || des == NULL || len <= 0)
+    {
+        return;
+    }
+
+    char *src_it = src;
+    char *dest_it = des + des_offset;
+    size_t size = 0;
+    while (size < len)
+    {
+        *dest_it = *src_it;
+        dest_it++;
+        src_it++;
+        size++;
+    }
 }
