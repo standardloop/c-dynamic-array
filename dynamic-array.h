@@ -8,8 +8,8 @@
 #define BRACKET_CLOSE_CHAR ']'
 #define SPACE_CHAR ' '
 #define COMMA_CHAR ','
-
 #define NULL_CHAR '\0'
+#define DOUBLE_QUOTES '\"'
 
 enum DynamicArrayElementType
 {

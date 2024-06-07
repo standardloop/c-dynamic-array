@@ -376,20 +376,38 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
     {
         if (*input_str == COMMA_CHAR || char_count == input_str_len - 1)
         {
+            enum DynamicArrayElementType element_type = DYN_ARR_t;
+            DynamicArrayElement *element = NULL;
             value_end = input_str - 1;
+            if (*value_start == DOUBLE_QUOTES && *value_end == DOUBLE_QUOTES)
+            {
+                value_start++;
+                value_end--;
+                element_type = CHAR_ARR_t;
+            }
             size_t value_size = (value_end - value_start) + 1;
             char *substring = malloc(sizeof(char) * (value_size + 1));
             copyString(value_start, substring, value_size, 0);
 
             substring[value_size] = NULL_CHAR;
-            // printf("%s\n", substring);
 
-            int value_temp = atoi(substring);
-            free(substring);
-            int *value = malloc(sizeof(int) * 1);
-            *value = value_temp;
+            if (element_type == CHAR_ARR_t)
+            {
+                element = DynamicArrayElementInit(element_type, substring, (value_size + 1));
+            }
+            else
+            {
+                int value_temp = atoi(substring);
+                free(substring);
+                int *value = malloc(sizeof(int) * 1);
+                *value = value_temp;
+                element = DynamicArrayElementInit(INT_t, value, 1);
+            }
+
+            // printf("%s\n", substring);
             // printf("%d\n", *value);
-            DynamicArrayAddLast(dynamic_array, DynamicArrayElementInit(INT_t, value, 1));
+
+            DynamicArrayAddLast(dynamic_array, element);
 
             //  printf("[JOSH]: %d\n", value);
             value_start = input_str + 1;

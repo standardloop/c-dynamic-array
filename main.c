@@ -63,7 +63,7 @@ int main(void)
 
     FreeDynamicArray(copy_again);
 
-    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[12345,    9,   12313,     3,               1]");
+    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[12345,    9,   12313,     3,     \"hello\",         1]");
     if (dynamicArryFromStr == NULL)
     {
         return EXIT_FAILURE;
