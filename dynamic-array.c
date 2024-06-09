@@ -18,6 +18,8 @@ static void printIntArr(int *, unsigned int, bool, int);
 static void printDynamicArrayHelper(DynamicArray *, bool, int);
 static inline void printSpaces(int);
 
+static int *stringToIntArr(const char *, size_t);
+
 extern DynamicArray *DefaultDynamicArrayInit(void)
 {
     return DynamicArrayInit(DEFAULT_LIST_SIZE);
@@ -178,7 +180,7 @@ static void printIntArr(int *arr, unsigned int len, bool pretty, int depth)
         if (i != len - 1)
         {
 
-            printf(",");
+            printf(", ");
         }
         if (pretty)
         {
@@ -408,7 +410,7 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
             enum DynamicArrayElementType element_type;
             bool isElementArray = false;
             DynamicArrayElement *element = NULL;
-            if (!nested)
+            if (*input_str == COMMA_CHAR || char_count == input_str_len - 1)
             {
                 value_end = input_str - 1;
             }
@@ -416,20 +418,19 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
             {
                 value_end = input_str;
             }
-            // printf("%c %c\n", *value_start, *value_end);
+
             if (*value_start == DOUBLE_QUOTES_CHAR && *value_end == DOUBLE_QUOTES_CHAR)
             {
-                // printf("QUOTES\n");
                 value_start++;
                 value_end--;
             }
             else if (*value_start == BRACKET_OPEN_CHAR && *value_end == BRACKET_CLOSE_CHAR)
             {
-                // printf("josh\n");
                 isElementArray = true;
             }
-
+            // printf("%c %c\n", *value_start, *value_end);
             size_t value_size = (value_end - value_start) + 1;
+
             if (value_size > 0)
             {
                 char *substring = malloc(sizeof(char) * (value_size + 1));
@@ -476,7 +477,7 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
                 else if (element_type == INT_ARR_t)
                 {
                     size_t arr_size = NumCharInString(substring, COMMA_CHAR) + 1;
-                    element = DynamicArrayElementInit(element_type, StringToIntArr(substring, arr_size), arr_size);
+                    element = DynamicArrayElementInit(element_type, stringToIntArr(substring, arr_size), arr_size);
                     free(substring);
                 }
                 else if (DYN_ARR_t)
@@ -488,18 +489,17 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
                     exit(1);
                 }
 
-                // printf("%s\n", substring);
-                // printf("%d\n", *value);
-
                 DynamicArrayAddLast(dynamic_array, element);
 
-                //  printf("[JOSH]: %d\n", value);
-                value_start = input_str + 1;
-                while (*value_start == SPACE_CHAR)
+                input_str++;
+                char_count++;
+                while (*input_str == SPACE_CHAR)
                 {
-                    value_start++;
+                    input_str++;
+                    char_count++;
                 }
-                if (*value_start == COMMA_CHAR && *(value_start + 1) == BRACKET_OPEN_CHAR)
+                value_start = input_str;
+                if (*value_start == COMMA_CHAR)
                 {
                     value_start++;
                 }
@@ -511,4 +511,41 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
     }
 
     return dynamic_array;
+}
+
+static int *stringToIntArr(const char *input_str, size_t num_elements)
+{
+    int *int_arr = malloc(sizeof(int) * num_elements);
+    size_t num_elements_in_arr = 0;
+    size_t input_str_len = strlen(input_str);
+    size_t char_count = 1;
+    input_str++;
+    const char *value_start = input_str;
+    const char *value_end = NULL;
+    while (*input_str != NULL_CHAR && num_elements_in_arr < num_elements)
+    {
+        if (*input_str == COMMA_CHAR || char_count == input_str_len - 1)
+        {
+            value_end = input_str - 1;
+            size_t value_size = (value_end - value_start) + 1;
+            char *substring = malloc(sizeof(char) * (value_size + 1));
+            CopyString(value_start, substring, value_size, 0);
+            substring[value_size] = NULL_CHAR;
+            // printf("%s\n", substring);
+
+            int value_temp = atoi(substring);
+            free(substring);
+            int_arr[num_elements_in_arr] = value_temp;
+            num_elements_in_arr++;
+
+            value_start = input_str + 1;
+            while (*value_start == SPACE_CHAR)
+            {
+                value_start++;
+            }
+        }
+        input_str++;
+        char_count++;
+    }
+    return int_arr;
 }

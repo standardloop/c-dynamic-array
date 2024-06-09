@@ -18,5 +18,5 @@
 extern void CopyString(const char *, char *, size_t, size_t);
 extern bool IsCharInString(const char *, char);
 extern size_t NumCharInString(const char *, char);
-extern int *StringToIntArr(const char *, size_t);
+
 #endif

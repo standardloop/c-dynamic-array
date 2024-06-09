@@ -63,9 +63,7 @@ int main(void)
 
     FreeDynamicArray(copy_again);
 
-    // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[100, \"hello\", [1,2,3]]");
-    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[[1,2,3]]");
-    // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[100, \"hello\"]");
+    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[[1,2,3],[4,5,6, 8, 9, 4, 3], 1, 5, 6, 6, \"test\", [234, 542, 6774]]");
     if (dynamicArryFromStr == NULL)
     {
         return EXIT_FAILURE;
