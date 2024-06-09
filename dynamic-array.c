@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "./dynamic-array.h"
+#include "./util.h"
 
 static inline bool isDynamicArrayFull(DynamicArray *);
 static inline bool isDynamicArrayEmpty(DynamicArray *);
@@ -16,8 +17,6 @@ static DynamicArrayElement *dynamicArrayElementReplicate(DynamicArrayElement *);
 static void printIntArr(int *, unsigned int, bool, int);
 static void printDynamicArrayHelper(DynamicArray *, bool, int);
 static inline void printSpaces(int);
-
-static void copyString(char *, char *, size_t, size_t);
 
 extern DynamicArray *DefaultDynamicArrayInit(void)
 {
@@ -121,8 +120,8 @@ static void freeDynamicArrayListElement(DynamicArrayElement *element)
         {
             free(element->value);
         }
-        free(element);
     }
+    free(element);
 }
 
 static void freeDynamicArrayList(DynamicArrayElement **list, unsigned int size, bool deep)
@@ -348,6 +347,30 @@ extern DynamicArray *DynamicArrayReplicate(DynamicArray *dynamic_array)
     return deep_clone;
 }
 
+extern void *ArrayFromStr(char *input_str, enum DynamicArrayElementType type)
+{
+    if (input_str == NULL)
+    {
+        printf("invalid input to ArrayFromStr\n");
+        return NULL;
+    }
+    size_t input_str_len = strlen(input_str);
+    if (input_str_len == 0 || input_str[0] != BRACKET_OPEN_CHAR || input_str[input_str_len - 1] != BRACKET_CLOSE_CHAR)
+    {
+        printf("invalid input to ArrayFromStr\n");
+        return NULL;
+    }
+
+    while (*input_str != NULL_CHAR)
+    {
+    }
+    if (type == INT_ARR_t)
+    {
+        pass;
+    }
+    return NULL;
+}
+
 extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
 {
     if (input_str == NULL)
@@ -372,48 +395,115 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
     char *value_start = input_str;
     char *value_end = NULL;
     size_t char_count = 1;
+    bool nested = false;
+    if (*value_start == BRACKET_OPEN_CHAR)
+    {
+        nested = true;
+    }
+
     while (*input_str != NULL_CHAR)
     {
-        if (*input_str == COMMA_CHAR || char_count == input_str_len - 1)
+        if (((*input_str == COMMA_CHAR) && !nested) || ((*input_str == BRACKET_CLOSE_CHAR) && nested) || char_count == input_str_len - 1)
         {
-            enum DynamicArrayElementType element_type = DYN_ARR_t;
+            enum DynamicArrayElementType element_type;
+            bool isElementArray = false;
             DynamicArrayElement *element = NULL;
-            value_end = input_str - 1;
-            if (*value_start == DOUBLE_QUOTES && *value_end == DOUBLE_QUOTES)
+            if (!nested)
             {
-                value_start++;
-                value_end--;
-                element_type = CHAR_ARR_t;
-            }
-            size_t value_size = (value_end - value_start) + 1;
-            char *substring = malloc(sizeof(char) * (value_size + 1));
-            copyString(value_start, substring, value_size, 0);
-
-            substring[value_size] = NULL_CHAR;
-
-            if (element_type == CHAR_ARR_t)
-            {
-                element = DynamicArrayElementInit(element_type, substring, (value_size + 1));
+                value_end = input_str - 1;
             }
             else
             {
-                int value_temp = atoi(substring);
-                free(substring);
-                int *value = malloc(sizeof(int) * 1);
-                *value = value_temp;
-                element = DynamicArrayElementInit(INT_t, value, 1);
+                value_end = input_str;
+            }
+            // printf("%c %c\n", *value_start, *value_end);
+            if (*value_start == DOUBLE_QUOTES_CHAR && *value_end == DOUBLE_QUOTES_CHAR)
+            {
+                // printf("QUOTES\n");
+                value_start++;
+                value_end--;
+            }
+            else if (*value_start == BRACKET_OPEN_CHAR && *value_end == BRACKET_CLOSE_CHAR)
+            {
+                // printf("josh\n");
+                isElementArray = true;
             }
 
-            // printf("%s\n", substring);
-            // printf("%d\n", *value);
-
-            DynamicArrayAddLast(dynamic_array, element);
-
-            //  printf("[JOSH]: %d\n", value);
-            value_start = input_str + 1;
-            while (*value_start == SPACE_CHAR)
+            size_t value_size = (value_end - value_start) + 1;
+            if (value_size > 0)
             {
-                value_start++;
+                char *substring = malloc(sizeof(char) * (value_size + 1));
+                CopyString(value_start, substring, value_size, 0);
+
+                substring[value_size] = NULL_CHAR;
+
+                if (isElementArray)
+                {
+                    if (IsCharInString(substring, DOUBLE_QUOTES_CHAR))
+                    {
+                        element_type = DYN_ARR_t;
+                    }
+                    else
+                    {
+                        element_type = INT_ARR_t;
+                    }
+                }
+                else
+                {
+                    // FIXME, zero value
+                    if (!atoi(substring))
+                    {
+                        element_type = CHAR_ARR_t;
+                    }
+                    else
+                    {
+                        element_type = INT_t;
+                    }
+                }
+
+                if (element_type == CHAR_ARR_t)
+                {
+                    element = DynamicArrayElementInit(element_type, substring, (value_size + 1));
+                }
+                else if (element_type == INT_t)
+                {
+                    int value_temp = atoi(substring);
+                    free(substring);
+                    int *value = malloc(sizeof(int) * 1);
+                    *value = value_temp;
+                    element = DynamicArrayElementInit(element_type, value, 1);
+                }
+                else if (element_type == INT_ARR_t)
+                {
+                    size_t arr_size = NumCharInString(substring, COMMA_CHAR) + 1;
+                    element = DynamicArrayElementInit(element_type, StringToIntArr(substring, arr_size), arr_size);
+                    free(substring);
+                }
+                else if (DYN_ARR_t)
+                {
+                    // element = DynamicArrayInitFromStr(substring);
+                }
+                else
+                {
+                    exit(1);
+                }
+
+                // printf("%s\n", substring);
+                // printf("%d\n", *value);
+
+                DynamicArrayAddLast(dynamic_array, element);
+
+                //  printf("[JOSH]: %d\n", value);
+                value_start = input_str + 1;
+                while (*value_start == SPACE_CHAR)
+                {
+                    value_start++;
+                }
+                if (*value_start == COMMA_CHAR && *(value_start + 1) == BRACKET_OPEN_CHAR)
+                {
+                    value_start++;
+                }
+                nested = (*value_start == BRACKET_OPEN_CHAR) && (char_count != input_str_len - 1);
             }
         }
         input_str++;
@@ -421,23 +511,4 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
     }
 
     return dynamic_array;
-}
-
-static void copyString(char *src, char *des, size_t len, size_t des_offset)
-{
-    if (src == NULL || des == NULL || len <= 0)
-    {
-        return;
-    }
-
-    char *src_it = src;
-    char *dest_it = des + des_offset;
-    size_t size = 0;
-    while (size < len)
-    {
-        *dest_it = *src_it;
-        dest_it++;
-        src_it++;
-        size++;
-    }
 }

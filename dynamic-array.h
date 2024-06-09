@@ -4,13 +4,6 @@
 #define RESIZE_MULTIPLE 2
 #define DEFAULT_LIST_SIZE 5
 
-#define BRACKET_OPEN_CHAR '['
-#define BRACKET_CLOSE_CHAR ']'
-#define SPACE_CHAR ' '
-#define COMMA_CHAR ','
-#define NULL_CHAR '\0'
-#define DOUBLE_QUOTES '\"'
-
 enum DynamicArrayElementType
 {
     INT_ARR_t,
@@ -50,5 +43,7 @@ extern void DynamicArrayRemoveLast(DynamicArray *);
 
 extern void PrintDynamicArray(DynamicArray *, bool, int);
 extern void FreeDynamicArray(DynamicArray *);
+
+extern void *ArrayFromStr(char *, enum DynamicArrayElementType);
 
 #endif

@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "./dynamic-array.h"
+#include "./util.h"
 
 static char *quickString(char *);
 static int *quickInt(int);
@@ -32,7 +33,6 @@ int main(void)
     {
         return EXIT_FAILURE;
     }
-
     DynamicArrayElement *string_ele = DynamicArrayElementInit(CHAR_ARR_t, quickString("hello"), 6);
     DynamicArrayAddFirst(dynamic_array, string_ele);
 
@@ -63,7 +63,9 @@ int main(void)
 
     FreeDynamicArray(copy_again);
 
-    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[12345,    9,   12313,     3,     \"hello\",         1]");
+    // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[100, \"hello\", [1,2,3]]");
+    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[[1,2,3]]");
+    // DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[100, \"hello\"]");
     if (dynamicArryFromStr == NULL)
     {
         return EXIT_FAILURE;
