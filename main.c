@@ -63,14 +63,14 @@ int main(void)
 
     FreeDynamicArray(copy_again);
 
-    DynamicArray *dynamicArryFromStr = DynamicArrayInitFromStr("[[1,2,3],[4,5,6, 8, 9, 4, 3], 1, 5, 6, 6, \"test\", [234, 542, 6774]]");
-    if (dynamicArryFromStr == NULL)
+    DynamicArray *dyn_arr_from_str = DynamicArrayInitFromStr("[[1,2,3],[4,5,6, 8, 9, 4, 3], 1, 5, 6, 6, \"test\", [234, 542, 6774], [1,2,4], [1, \"nested\"]]");
+    if (dyn_arr_from_str == NULL)
     {
         return EXIT_FAILURE;
     }
-    PrintDynamicArray(dynamicArryFromStr, true, 2);
+    PrintDynamicArray(dyn_arr_from_str, true, 2);
 
-    FreeDynamicArray(dynamicArryFromStr);
+    FreeDynamicArray(dyn_arr_from_str);
 
     return EXIT_SUCCESS;
 }

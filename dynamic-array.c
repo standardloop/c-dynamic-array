@@ -408,7 +408,7 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
         if (((*input_str == COMMA_CHAR) && !nested) || ((*input_str == BRACKET_CLOSE_CHAR) && nested) || char_count == input_str_len - 1)
         {
             enum DynamicArrayElementType element_type;
-            bool isElementArray = false;
+            bool is_element_arr = false;
             DynamicArrayElement *element = NULL;
             if (*input_str == COMMA_CHAR || char_count == input_str_len - 1)
             {
@@ -426,7 +426,7 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
             }
             else if (*value_start == BRACKET_OPEN_CHAR && *value_end == BRACKET_CLOSE_CHAR)
             {
-                isElementArray = true;
+                is_element_arr = true;
             }
             // printf("%c %c\n", *value_start, *value_end);
             size_t value_size = (value_end - value_start) + 1;
@@ -438,7 +438,7 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
 
                 substring[value_size] = NULL_CHAR;
 
-                if (isElementArray)
+                if (is_element_arr)
                 {
                     if (IsCharInString(substring, DOUBLE_QUOTES_CHAR))
                     {
@@ -480,9 +480,11 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
                     element = DynamicArrayElementInit(element_type, stringToIntArr(substring, arr_size), arr_size);
                     free(substring);
                 }
-                else if (DYN_ARR_t)
+                else if (element_type == DYN_ARR_t)
                 {
-                    // element = DynamicArrayInitFromStr(substring);
+                    DynamicArray *sub_dyn_array = DynamicArrayInitFromStr(substring);
+                    element = DynamicArrayElementInit(element_type, sub_dyn_array, sub_dyn_array->size);
+                    free(substring);
                 }
                 else
                 {
@@ -493,16 +495,17 @@ extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
 
                 input_str++;
                 char_count++;
+                if (*input_str == COMMA_CHAR)
+                {
+                    input_str++;
+                    char_count++;
+                }
                 while (*input_str == SPACE_CHAR)
                 {
                     input_str++;
                     char_count++;
                 }
                 value_start = input_str;
-                if (*value_start == COMMA_CHAR)
-                {
-                    value_start++;
-                }
                 nested = (*value_start == BRACKET_OPEN_CHAR) && (char_count != input_str_len - 1);
             }
         }
