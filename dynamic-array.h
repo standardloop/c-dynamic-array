@@ -44,6 +44,6 @@ extern void DynamicArrayRemoveLast(DynamicArray *);
 extern void PrintDynamicArray(DynamicArray *, bool, int);
 extern void FreeDynamicArray(DynamicArray *);
 
-extern void *ArrayFromStr(char *, enum DynamicArrayElementType);
+extern char *DynamicArrayToString(DynamicArray *);
 
 #endif

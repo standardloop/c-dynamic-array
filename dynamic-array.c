@@ -349,30 +349,6 @@ extern DynamicArray *DynamicArrayReplicate(DynamicArray *dynamic_array)
     return deep_clone;
 }
 
-extern void *ArrayFromStr(char *input_str, enum DynamicArrayElementType type)
-{
-    if (input_str == NULL)
-    {
-        printf("invalid input to ArrayFromStr\n");
-        return NULL;
-    }
-    size_t input_str_len = strlen(input_str);
-    if (input_str_len == 0 || input_str[0] != BRACKET_OPEN_CHAR || input_str[input_str_len - 1] != BRACKET_CLOSE_CHAR)
-    {
-        printf("invalid input to ArrayFromStr\n");
-        return NULL;
-    }
-
-    while (*input_str != NULL_CHAR)
-    {
-    }
-    if (type == INT_ARR_t)
-    {
-        pass;
-    }
-    return NULL;
-}
-
 extern DynamicArray *DynamicArrayInitFromStr(char *input_str)
 {
     if (input_str == NULL)
@@ -551,4 +527,14 @@ static int *stringToIntArr(const char *input_str, size_t num_elements)
         char_count++;
     }
     return int_arr;
+}
+
+char *DynamicArrayToString(DynamicArray *dynamic_array)
+{
+    if (dynamic_array == NULL)
+    {
+        return NULL;
+    }
+    FreeDynamicArray(dynamic_array);
+    return NULL;
 }
